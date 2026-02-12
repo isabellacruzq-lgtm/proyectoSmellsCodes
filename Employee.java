@@ -4,55 +4,75 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-/**
+/*
  * SMELL: God Object - Esta clase hace demasiadas cosas
  * SMELL: Magic Numbers - Valores hardcodeados
  * SMELL: Long Methods - Métodos muy largos
  * SMELL: Feature Envy - Usa mucho de otras clases
  */
-public class Employee {
-    
-    // SMELL: Data Clumps - Estos datos deberían ser objetos separados
-    private String firstName;
-    private String lastName;
-    private String email;
-    private String phone;
-    private String department;
-    private String position;
-    private double salary;
-    private double bonusPercentage;
-    private int yearsWorked;
-    private String address;
+
+public class Address {
+    private String street;
     private String city;
     private String country;
     private String zipCode;
-    private Date hireDate;
-    private Date birthDate;
-    private List<String> projects;
-    private double performanceScore;
-    private int vacationDays;
-    private boolean isActive;
-    
-    public Employee(String firstName, String lastName, String email, String phone, 
-                   String department, String position, double salary, int yearsWorked) {
+
+    public Address(String street, String city, String country, String zipCode) {
+        this.street = street;
+        this.city = city;
+        this.country = country;
+        this.zipCode = zipCode;
+    }
+        public class ContactInfo {
+        private String firstName;
+        private String lastName;
+        private String email;
+        private String phone;
+
+    public ContactInfo(String firstName, String lastName, String email, String phone) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.phone = phone;
+    }
+
+    public class Employee {
+    // Los "Clumps" ahora son objetos
+        private ContactInfo contact;
+        private Address address;
+        
+        private String department;
+        private String position;
+        private double salary;
+        private int yearsWorked;
+    
+    // El constructor ahora es mucho más corto
+    public Employee(ContactInfo contact, String department, String position, double salary) {
+        this.contact = contact;
         this.department = department;
         this.position = position;
         this.salary = salary;
-        this.yearsWorked = yearsWorked;
-        this.projects = new ArrayList<>();
-        this.bonusPercentage = 0.0;
-        this.performanceScore = 0.0;
-        this.vacationDays = 20;
+        this.yearsWorked = 0;
         this.isActive = true;
     }
     
     // SMELL: Long Method - Este método hace muchas cosas
+
+    private static final int MONTHS_IN_YEAR = 12;
+
     public double calculateAnnualCompensation() {
-        double baseSalary = this.salary * 12;
+        // El método ahora es descriptivo y corto (Long Method solucionado)
+        double annualBase = calculateBaseSalary(MONTHS_IN_YEAR);
+        double totalBonuses = calculateSeniorityBonus(annualBase) + calculateDepartmentBonus();
+        
+        return annualBase + totalBonuses;
+    }
+
+    private double calculateBaseSalary(int months) {
+        return this.salary * months;
+    }
+    
+    // Los demás cálculos se extraen a métodos privados para limpiar el flujo principal
         
         // SMELL: Magic Number - ¿Por qué 0.05?
         double seniorityBonus = 0;
